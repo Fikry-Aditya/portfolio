@@ -7,15 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface2: #1a1a28;
-    --accent: #6c63ff;
-    --accent2: #00d4aa;
-    --accent3: #ff6b6b;
-    --text: #f0f0f5;
-    --text-muted: #8888aa;
-    --border: rgba(108, 99, 255, 0.15);
+    --bg: #f3f2ef;
+    --surface: #ffffff;
+    --surface2: #f3f2ef;
+    --accent: #0A66C2;
+    --accent2: #057642;
+    --accent3: #B24020;
+    --text: #191919;
+    --text-muted: #666666;
+    --border: rgba(0,0,0,0.1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,29 +27,9 @@
     color: var(--text);
     font-family: 'Inter', sans-serif;
     overflow-x: hidden;
-    cursor: none;
   }
 
-  /* Custom cursor */
-  .cursor {
-    width: 12px; height: 12px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.1s ease;
-    mix-blend-mode: screen;
-  }
-  .cursor-follower {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(108,99,255,0.4);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9998;
-    transition: all 0.15s ease;
-  }
+  /* No custom cursor */
 
   /* Nav */
   nav {
@@ -59,7 +39,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+    background: linear-gradient(to bottom, rgba(243,242,239,0.97), transparent);
     backdrop-filter: blur(10px);
   }
   .nav-logo {
@@ -93,13 +73,13 @@
   .hero-bg {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(108,99,255,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,212,170,0.06) 0%, transparent 60%);
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(10,102,194,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(5,118,66,0.04) 0%, transparent 60%);
   }
   .hero-grid {
     position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(10,102,194,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(10,102,194,0.05) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
   }
@@ -108,8 +88,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(108,99,255,0.1);
-    border: 1px solid rgba(108,99,255,0.2);
+    background: rgba(10,102,194,0.08);
+    border: 1px solid rgba(10,102,194,0.2);
     border-radius: 100px;
     padding: 6px 16px;
     font-size: 12px;
@@ -285,6 +265,7 @@
     transition: all 0.25s;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .skill-card::before {
     content: '';
@@ -296,7 +277,7 @@
     transform-origin: left;
     transition: transform 0.3s;
   }
-  .skill-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-4px); }
+  .skill-card:hover { border-color: rgba(10,102,194,0.3); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(10,102,194,0.08); }
   .skill-card:hover::before { transform: scaleX(1); }
   .skill-icon {
     font-size: 28px;
@@ -315,9 +296,9 @@
     margin-top: 16px;
   }
   .skill-tag {
-    background: rgba(108,99,255,0.1);
-    border: 1px solid rgba(108,99,255,0.15);
-    color: var(--text-muted);
+    background: rgba(10,102,194,0.08);
+    border: 1px solid rgba(10,102,194,0.15);
+    color: var(--accent);
     font-size: 11px;
     padding: 4px 10px;
     border-radius: 100px;
@@ -328,13 +309,14 @@
   .experience { background: var(--surface); }
   .exp-timeline { display: flex; flex-direction: column; gap: 2px; }
   .exp-card {
-    background: var(--surface2);
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
-  .exp-card:hover { border-color: rgba(108,99,255,0.3); }
+  .exp-card:hover { border-color: rgba(10,102,194,0.3); box-shadow: 0 4px 16px rgba(10,102,194,0.08); }
   .exp-header {
     padding: 32px 40px;
     display: grid;
@@ -394,8 +376,8 @@
     flex-wrap: wrap;
   }
   .exp-metric {
-    background: rgba(0,212,170,0.08);
-    border: 1px solid rgba(0,212,170,0.15);
+    background: rgba(10,102,194,0.06);
+    border: 1px solid rgba(10,102,194,0.15);
     border-radius: 8px;
     padding: 12px 20px;
     text-align: center;
@@ -435,15 +417,16 @@
     transition: all 0.25s;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .portfolio-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at top left, rgba(108,99,255,0.06), transparent 60%);
+    background: radial-gradient(ellipse at top left, rgba(10,102,194,0.04), transparent 60%);
     pointer-events: none;
   }
-  .portfolio-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-4px); }
+  .portfolio-card:hover { border-color: rgba(10,102,194,0.3); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(10,102,194,0.08); }
   .portfolio-card h3 {
     font-family: 'Outfit', sans-serif;
     font-size: 20px;
@@ -483,7 +466,7 @@
   }
 
   /* Contact */
-  .contact { background: var(--surface); text-align: center; }
+  .contact { background: #EBF3FB; text-align: center; border-top: 1px solid rgba(10,102,194,0.1); }
   .contact-inner { max-width: 600px; margin: 0 auto; }
   .contact h2 {
     font-family: 'Outfit', sans-serif;
@@ -644,8 +627,7 @@
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-follower" id="cursorFollower"></div>
+
 
 <nav>
   <div class="nav-logo">Fikry<span>.</span></div>
@@ -1033,26 +1015,6 @@
 </footer>
 
 <script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const follower = document.getElementById('cursorFollower');
-  let mx = 0, my = 0, fx = 0, fy = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 6 + 'px';
-    cursor.style.top = my - 6 + 'px';
-  });
-
-  function animateFollower() {
-    fx += (mx - fx - 18) * 0.12;
-    fy += (my - fy - 18) * 0.12;
-    follower.style.left = fx + 'px';
-    follower.style.top = fy + 'px';
-    requestAnimationFrame(animateFollower);
-  }
-  animateFollower();
-
   // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
