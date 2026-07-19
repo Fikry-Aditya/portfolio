@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fikry Aditya — Digital Marketing Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a28;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #ff6b6b;
+    --text: #f0f0f5;
+    --text-muted: #8888aa;
+    --border: rgba(108, 99, 255, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-follower {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(108,99,255,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+    backdrop-filter: blur(10px);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 60px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(108,99,255,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,212,170,0.06) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .hero h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -3px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 .line2 { color: var(--accent); }
+  .hero-desc {
+    font-size: 18px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-cta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { background: #7c74ff; transform: translateY(-2px); }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--text); }
+
+  /* Stats bar */
+  .stats-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat-item {
+    padding: 0 40px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .stat-item:first-child { padding-left: 0; }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -1px;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Section base */
+  section { padding: 100px 60px; }
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 60px;
+    line-height: 1.1;
+  }
+
+  /* About */
+  .about { background: var(--surface); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-text p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-weight: 300;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+  .about-highlights { display: flex; flex-direction: column; gap: 20px; }
+  .highlight-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .highlight-card:hover { border-color: var(--accent); }
+  .highlight-card h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .highlight-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Skills */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .skill-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-4px); }
+  .skill-card:hover::before { transform: scaleX(1); }
+  .skill-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+  .skill-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .skill-tag {
+    background: rgba(108,99,255,0.1);
+    border: 1px solid rgba(108,99,255,0.15);
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  /* Experience */
+  .experience { background: var(--surface); }
+  .exp-timeline { display: flex; flex-direction: column; gap: 2px; }
+  .exp-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .exp-card:hover { border-color: rgba(108,99,255,0.3); }
+  .exp-header {
+    padding: 32px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: start;
+    cursor: pointer;
+  }
+  .exp-company {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .exp-role {
+    font-size: 15px;
+    color: var(--accent);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+  .exp-date {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: right;
+    white-space: nowrap;
+    margin-top: 4px;
+  }
+  .exp-body {
+    padding: 0 40px 32px;
+    display: none;
+  }
+  .exp-body.open { display: block; }
+  .exp-body ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .exp-body ul li {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    padding-left: 20px;
+    position: relative;
+  }
+  .exp-body ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 13px;
+  }
+  .exp-metrics {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .exp-metric {
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.15);
+    border-radius: 8px;
+    padding: 12px 20px;
+    text-align: center;
+  }
+  .exp-metric .num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -0.5px;
+  }
+  .exp-metric .lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+  .exp-toggle {
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+    margin-top: 4px;
+  }
+  .exp-card.open .exp-toggle { transform: rotate(45deg); }
+
+  /* Portfolio section */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .portfolio-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .portfolio-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, rgba(108,99,255,0.06), transparent 60%);
+    pointer-events: none;
+  }
+  .portfolio-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-4px); }
+  .portfolio-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .portfolio-card .sub {
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .portfolio-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .metrics-row {
+    display: flex;
+    gap: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .metric-item .val {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--accent2);
+    letter-spacing: -0.5px;
+  }
+  .metric-item .key {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Contact */
+  .contact { background: var(--surface); text-align: center; }
+  .contact-inner { max-width: 600px; margin: 0 auto; }
+  .contact h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .contact p {
+    font-size: 17px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .contact-link.primary {
+    background: var(--accent);
+    color: white;
+  }
+  .contact-link.primary:hover { background: #7c74ff; transform: translateY(-2px); }
+  .contact-link.secondary {
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .contact-link.secondary:hover { border-color: var(--accent); color: var(--text); }
+
+  /* Footer */
+  footer {
+    padding: 32px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer p { font-size: 13px; color: var(--text-muted); }
+
+  /* Photo card */
+  .photo-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    width: fit-content;
+  }
+  .photo-placeholder {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .photo-placeholder img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .photo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%; height: 100%;
+  }
+  .photo-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+  }
+  .photo-title {
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .photo-location {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Channel icons */
+  .channel-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .channel-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .channel-icon img {
+    width: 18px; height: 18px;
+    object-fit: contain;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: all 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .stats-bar { padding: 24px; grid-template-columns: repeat(2,1fr); gap: 24px; }
+    .stat-item { border-right: none; padding: 0; }
+    section { padding: 60px 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<nav>
+  <div class="nav-logo">Fikry<span>.</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for opportunities</div>
+    <h1>
+      Fikry<br>
+      <span class="line2">Aditya.</span>
+    </h1>
+    <p class="hero-desc">
+      Performance marketing professional with 3+ years driving measurable growth across paid media, CRM, and e-commerce. I manage budgets, build systems, and let data make the decisions.
+    </p>
+    <div class="hero-cta">
+      <a href="#work" class="btn-primary">View My Work ↓</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal">
+  <div class="stat-item">
+    <div class="stat-number">Rp400M+</div>
+    <div class="stat-label">Monthly Budget Managed</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">3.1x</div>
+    <div class="stat-label">Revenue Growth (5 months)</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">5.3x</div>
+    <div class="stat-label">Peak ROAS Achieved</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">3+</div>
+    <div class="stat-label">Years Experience</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-label">About Me</div>
+  <div class="section-title">The person<br>behind the numbers.</div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <div class="photo-card">
+        <div class="photo-placeholder">
+          <div class="photo-fallback">FA</div>
+        </div>
+        <div class="photo-info">
+          <div class="photo-name">Fikry Aditya</div>
+          <div class="photo-title">Performance Marketing Specialist</div>
+          <div class="photo-location">Jakarta, Indonesia</div>
+        </div>
+      </div>
+      <p style="margin-top:28px">I'm a <strong>performance-driven digital marketer</strong> based in Jakarta. My work sits at the intersection of paid media, data analysis, and campaign execution. I don't just run ads, I build systems that scale.</p>
+      <p>Across every role, I've consistently operated with <strong>full ownership</strong> — setting KPIs, managing budgets independently, coordinating cross-functional teams, and delivering results without needing to be pushed.</p>
+      <p>I believe great marketing is about <strong>hypotheses, testing, and iteration</strong>. Every campaign is an experiment. Every data point is a signal.</p>
+    </div>
+    <div class="about-highlights">
+      <div class="highlight-card">
+        <h4>Current Role</h4>
+        <p>Performance Marketing Specialist at Porto X, managing ~Rp400M/month across Meta, TikTok, Google Ads, and e-commerce platforms.</p>
+      </div>
+      <div class="highlight-card">
+        <h4>What I bring</h4>
+        <p>Budget ownership, ROAS optimisation, creative brief writing, conversion tracking setup, and cross-functional coordination with Legal, Finance, and Procurement.</p>
+      </div>
+      <div class="highlight-card">
+        <h4>Currently learning</h4>
+        <p>Data automation — building reporting pipelines that feed campaign data directly into dashboards without manual input.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Skills & Tools</div>
+  <div class="section-title">What I work with.</div>
+  <div class="skills-grid reveal">
+    <div class="skill-card">
+      <div class="skill-icon">📊</div>
+      <h3>Paid Media</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Campaign setup, budget management, audience segmentation, A/B testing, ROAS and CPA optimisation across multiple platforms.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Meta Ads</span>
+        <span class="skill-tag">TikTok Ads</span>
+        <span class="skill-tag">Google Ads</span>
+        <span class="skill-tag">Shopee Ads</span>
+        <span class="skill-tag">SHAREit</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🔍</div>
+      <h3>Tracking & Analytics</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Conversion tracking setup, event implementation, attribution analysis, and dashboard building for real-time performance monitoring.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">GTM</span>
+        <span class="skill-tag">GA4</span>
+        <span class="skill-tag">AppsFlyer</span>
+        <span class="skill-tag">Looker Studio</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🌐</div>
+      <h3>Website Management</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Landing page creation, content updates, campaign page management, and website maintenance across multiple CMS platforms.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">WordPress</span>
+        <span class="skill-tag">Wix</span>
+        <span class="skill-tag">Magento</span>
+        <span class="skill-tag">HubSpot CMS</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🤝</div>
+      <h3>CRM & Lead Management</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Customer journey mapping, retention systems, lead pipeline management, and sales funnel coordination.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">HubSpot</span>
+        <span class="skill-tag">Freshworks</span>
+        <span class="skill-tag">Insider</span>
+        <span class="skill-tag">Inside CRM</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">📝</div>
+      <h3>Campaign Operations</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Creative brief writing, project tracker management, stakeholder reporting, and cross-functional coordination.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Google Sheets</span>
+        <span class="skill-tag">Notion</span>
+        <span class="skill-tag">Asana</span>
+        <span class="skill-tag">Trello</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">🎨</div>
+      <h3>Creative & Design</h3>
+      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Ad creative direction, brief writing, content coordination, and basic design execution for campaign assets.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">Canva</span>
+        <span class="skill-tag">Photoshop</span>
+        <span class="skill-tag">Premiere Pro</span>
+        <span class="skill-tag">Python</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="section-label">Experience</div>
+  <div class="section-title">Where I've worked.</div>
+  <div class="exp-timeline reveal">
+
+    <div class="exp-card open">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div>
+          <div class="exp-company">Porto X</div>
+          <div class="exp-role">Performance Marketing Specialist</div>
+        </div>
+        <div>
+          <div class="exp-date">Oct 2025 — Present</div>
+          <div class="exp-toggle" style="text-align:right">+</div>
+        </div>
+      </div>
+      <div class="exp-body open">
+        <div class="channel-icons">
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Meta_Platforms_Inc._logo.svg/512px-Meta_Platforms_Inc._logo.svg.png" alt="Meta">Meta Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png" alt="TikTok">TikTok Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Ads_logo.svg/512px-Google_Ads_logo.svg.png" alt="Google Ads">Google Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Shopee.svg/512px-Shopee.svg.png" alt="Shopee">Shopee CPAS</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Analytics_Logo.svg/512px-Google_Analytics_Logo.svg.png" alt="GA4">GA4</div>
+          <div class="channel-icon"><img src="https://www.gstatic.com/analytics-suite/header/suite/v2/ic_tag_manager.svg" alt="GTM">GTM</div>
+        </div>
+        <div class="exp-metrics">
+          <div class="exp-metric">
+            <div class="num">Rp400M+</div>
+            <div class="lbl">Monthly Budget</div>
+          </div>
+          <div class="exp-metric">
+            <div class="num">3.1x</div>
+            <div class="lbl">Revenue Growth</div>
+          </div>
+          <div class="exp-metric">
+            <div class="num">5.3x</div>
+            <div class="lbl">Peak ROAS</div>
+          </div>
+          <div class="exp-metric">
+            <div class="num">+215%</div>
+            <div class="lbl">Purchase Volume</div>
+          </div>
+        </div>
+        <ul>
+          <li>Independently managed ~Rp400M monthly ad budget across Meta, TikTok, Google Ads, and e-commerce platforms, growing Gross Revenue from Rp609M to Rp1.9B+ in 5 months.</li>
+          <li>Scaled Shopee CPAS ROI from 4.7x to 5.3x over 6 months through continuous optimisation and data-driven budget reallocation.</li>
+          <li>Wrote creative briefs independently and coordinated end-to-end with the creative team to deliver campaign assets on time across all channels.</li>
+          <li>Planned and executed co-branded and marketplace partnership campaigns including Shopee mega campaigns, flash sales, and brand bundling promos.</li>
+          <li>Set up and maintained conversion tracking using GTM and GA4, and built live performance dashboards in Google Sheets and Looker Studio.</li>
+          <li>Navigated cross-functional coordination with Legal, Finance, Procurement, IT, and Expedition teams to bring campaigns to market.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card" style="margin-top:12px">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div>
+          <div class="exp-company">Your Comms Group</div>
+          <div class="exp-role">CRM Coordinator</div>
+        </div>
+        <div>
+          <div class="exp-date">Mar 2024 — Jul 2025</div>
+          <div class="exp-toggle" style="text-align:right">+</div>
+        </div>
+      </div>
+      <div class="exp-body">
+        <div class="channel-icons">
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/HubSpot_Logo.svg/512px-HubSpot_Logo.svg.png" alt="HubSpot">HubSpot</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/WordPress_blue_logo.svg/512px-WordPress_blue_logo.svg.png" alt="WordPress">WordPress</div>
+          <div class="channel-icon">🐍 Python</div>
+          <div class="channel-icon">📊 Google Sheets</div>
+        </div>
+        <ul>
+          <li>Collaborated with marketing and sales teams to map the customer journey and build a structured retention system.</li>
+          <li>Built and managed marketing landing pages and email campaigns in HubSpot and WordPress.</li>
+          <li>Maintained a live lead tracker and coordinated inbound lead assignment with the sales team.</li>
+          <li>Coordinated 2 admin staff on data scraping and validation tasks, managing workload distribution and quality control.</li>
+          <li>Utilised Python for lead data mining, contact validation, and database cleansing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-card" style="margin-top:12px">
+      <div class="exp-header" onclick="toggleExp(this)">
+        <div>
+          <div class="exp-company">MAPAN</div>
+          <div class="exp-role">Digital Marketing Officer</div>
+        </div>
+        <div>
+          <div class="exp-date">Mar 2023 — Jan 2024</div>
+          <div class="exp-toggle" style="text-align:right">+</div>
+        </div>
+      </div>
+      <div class="exp-body">
+        <div class="channel-icons">
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Meta_Platforms_Inc._logo.svg/512px-Meta_Platforms_Inc._logo.svg.png" alt="Meta">Meta Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png" alt="TikTok">TikTok Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Ads_logo.svg/512px-Google_Ads_logo.svg.png" alt="Google Ads">Google Ads</div>
+          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Analytics_Logo.svg/512px-Google_Analytics_Logo.svg.png" alt="GA4">GA4</div>
+          <div class="channel-icon"><img src="https://www.gstatic.com/analytics-suite/header/suite/v2/ic_tag_manager.svg" alt="GTM">GTM</div>
+          <div class="channel-icon">📱 AppsFlyer</div>
+          <div class="channel-icon">🔔 Insider CRM</div>
+          <div class="channel-icon">🌐 WordPress</div>
+        </div>
+        <ul>
+          <li>Executed paid campaigns across Meta, TikTok, Google Ads, and SHAREit, improving signup rate from 58% to 68% and purchase rate from 3.16% to 6.09%.</li>
+          <li>Set up conversion tracking using GTM, AppsFlyer, and GA4, coordinating with IT engineers and data analysts.</li>
+          <li>Managed CRM automation campaigns using Insider, targeting dozens of user segments via push notifications, WA blast, and in-app pop-ups.</li>
+          <li>Managed WordPress website updates and maintained campaign landing pages for active acquisition campaigns.</li>
+          <li>Reduced CPA (signup) by 42.55% and CPI by up to 35% through data-driven budget reallocation.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WORK / PORTFOLIO -->
+<section id="work">
+  <div class="section-label">Selected Work</div>
+  <div class="section-title">Campaigns that moved the needle.</div>
+  <div class="portfolio-grid reveal">
+
+    <div class="portfolio-card">
+      <h3>E-commerce Scale-Up</h3>
+      <div class="sub">Porto X · Shopee CPAS + Meta · Oct 2025 – Mar 2026</div>
+      <p>Hypothesised that retargeting pool was underutilised. Tested segmented audience structure across Shopee and Meta, then scaled aggressively. Managed full funnel from audience strategy to creative briefing and daily budget reallocation.</p>
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="val">3.1x</div>
+          <div class="key">Revenue Growth</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">5.3x</div>
+          <div class="key">ROAS</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">+215%</div>
+          <div class="key">Purchase Volume</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <h3>CPA Reduction Campaign</h3>
+      <div class="sub">Porto X · Meta Ads · Oct 2025 – Present</div>
+      <p>Identified inefficient audience targeting and bloated CPM costs. Rebuilt campaign structure with tighter segmentation, tested new creative angles weekly, and reallocated budget based on daily CPAS data — not platform attribution.</p>
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="val">75%+</div>
+          <div class="key">CPA Reduction</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">16x</div>
+          <div class="key">Purchase Volume</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <h3>Multi-Platform Acquisition</h3>
+      <div class="sub">MAPAN · Meta, TikTok, Google, SHAREit · 2023–2024</div>
+      <p>Managed cross-platform acquisition campaigns for a fintech app. Built creative briefs, coordinated assets, monitored daily tracking via AppsFlyer and GA4, and prepared weekly performance decks for stakeholders.</p>
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="val">42.55%</div>
+          <div class="key">CPA Reduction</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">68%</div>
+          <div class="key">Signup Rate</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">6.09%</div>
+          <div class="key">Purchase Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <h3>CRM Automation System</h3>
+      <div class="sub">MAPAN · Insider CRM · 2023–2024</div>
+      <p>Built and managed CRM automation campaigns targeting dozens of audience segments within the Mapan app. Coordinated with IT engineers and data analysts. Platforms included in-app pop-ups, WA blasts, and push notifications.</p>
+      <div class="metrics-row">
+        <div class="metric-item">
+          <div class="val">2,221</div>
+          <div class="key">Total Clicks</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">987</div>
+          <div class="key">Conversions</div>
+        </div>
+        <div class="metric-item">
+          <div class="val">0.86%</div>
+          <div class="key">CTR</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner reveal">
+    <div class="section-label" style="text-align:center">Contact</div>
+    <h2>Let's work together.</h2>
+    <p>Open to full-time roles, remote opportunities, and project-based work. If you need someone who can own campaigns end-to-end and deliver results, let's talk.</p>
+    <div class="contact-links">
+      <a href="mailto:adityafikry@gmail.com" class="contact-link primary">✉ adityafikry@gmail.com</a>
+      <a href="https://linkedin.com/in/fikry-aditya/" target="_blank" class="contact-link secondary">LinkedIn</a>
+      <a href="https://wa.me/6282334605569" target="_blank" class="contact-link secondary">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Fikry Aditya Ardiansyah. Jakarta, Indonesia.</p>
+  <p style="color:var(--text-muted);font-size:12px">Performance Marketing · CRM · E-commerce</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursorFollower');
+  let mx = 0, my = 0, fx = 0, fy = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+
+  function animateFollower() {
+    fx += (mx - fx - 18) * 0.12;
+    fy += (my - fy - 18) * 0.12;
+    follower.style.left = fx + 'px';
+    follower.style.top = fy + 'px';
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Experience toggle
+  function toggleExp(header) {
+    const card = header.parentElement;
+    const body = card.querySelector('.exp-body');
+    const toggle = card.querySelector('.exp-toggle');
+    const isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    card.classList.toggle('open');
+    toggle.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(45deg)';
+  }
+
+  // Animated number counter
+  function animateCounter(el, target, suffix='') {
+    let start = 0;
+    const duration = 1500;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+</script>
+</body>
+</html>
