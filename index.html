@@ -1,1122 +1,770 @@
-<!DOCTYPE html>
+from pathlib import Path
+from PIL import Image
+import zipfile, shutil, os
+
+base = Path("/mnt/data")
+site = base / "fikry_landing_page_restructured"
+assets = site / "assets"
+assets.mkdir(parents=True, exist_ok=True)
+
+# Reuse/copy existing assets when available
+possible_assets = {
+    "meta-results.png": base / "fikry_landing_page_final/assets/meta-results.png",
+    "meta-roas.png": base / "fikry_landing_page_final/assets/meta-roas.png",
+    "mapan-crm.png": base / "fikry_landing_page_final/assets/mapan-crm.png",
+    "mapan-acq-1.png": base / "fikry_landing_page_final/assets/mapan-acq-1.png",
+    "mapan-acq-2.png": base / "fikry_landing_page_final/assets/mapan-acq-2.png",
+    "mapan-plan.png": base / "fikry_landing_page_final/assets/mapan-plan.png",
+}
+
+fallbacks = {
+    "meta-results.png": base / "2626c774-73b7-48f6-ba3d-36acfe6b33f2.png",
+    "meta-roas.png": base / "a97ef07f-5380-4005-95a3-94a64360ad95.png",
+    "mapan-crm.png": base / "69265d5d-9b5e-44ad-ab65-cebccd274736.png",
+    "mapan-acq-1.png": base / "5b04c055-387e-4b7c-a9e8-b50d9586678d.png",
+    "mapan-acq-2.png": base / "0b58d8a6-84bc-4f52-8696-f28ae554fb57.png",
+    "mapan-plan.png": base / "6cb23834-61dc-447b-9e2a-91b5dca17696.png",
+}
+
+for name, src in possible_assets.items():
+    src_to_use = src if src.exists() else fallbacks[name]
+    if src_to_use.exists():
+        shutil.copy2(src_to_use, assets / name)
+
+html = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fikry Aditya — Digital Marketing Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Fikry Aditya — Performance Marketing portfolio and freelance services for e-commerce, paid acquisition, website growth, app growth, CRM, and analytics.">
+<title>Fikry Aditya — Performance Marketing</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #f3f2ef;
-    --surface: #ffffff;
-    --surface2: #f3f2ef;
-    --accent: #0A66C2;
-    --accent2: #057642;
-    --accent3: #B24020;
-    --text: #191919;
-    --text-muted: #666666;
-    --border: rgba(0,0,0,0.1);
-  }
+:root{
+  --bg:#f5f8ff;
+  --surface:#ffffff;
+  --soft:#edf3ff;
+  --soft2:#e6efff;
+  --blue:#1659e8;
+  --blue2:#2d6ff3;
+  --blue3:#0f3fa9;
+  --navy:#16336d;
+  --ink:#101828;
+  --muted:#667085;
+  --line:#dfe7f6;
+  --green:#0d8a63;
+  --shadow:0 18px 55px rgba(42,78,146,.10);
+  --shadow2:0 8px 26px rgba(42,78,146,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 84% 3%,rgba(22,89,232,.10),transparent 24%),
+    radial-gradient(circle at 12% 0%,rgba(45,111,243,.05),transparent 20%),
+    var(--bg);
+  overflow-x:hidden;
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button{font:inherit}
+.container{width:min(1180px,calc(100% - 40px));margin:auto}
+.section{padding:84px 0;scroll-margin-top:90px}
+.kicker{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:10px}
+.title{font-family:'Outfit';font-size:clamp(34px,4.7vw,56px);line-height:1.03;letter-spacing:-2px}
+.desc{font-size:14px;color:var(--muted);line-height:1.75;max-width:720px;margin-top:14px}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(245,248,255,.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(223,231,246,.8)
+}
+.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-family:'Outfit';font-weight:800;font-size:20px;display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--blue),#7094ff);
+  display:grid;place-items:center;color:white;font-size:12px;
+  box-shadow:0 8px 20px rgba(22,89,232,.22)
+}
+.links{display:flex;align-items:center;gap:25px}
+.links a{font-size:12px;color:#344054;font-weight:500}
+.links a:hover{color:var(--blue)}
+.links .nav-cta{background:var(--blue);color:white;padding:11px 16px;border-radius:9px;font-weight:600}
 
-  html { scroll-behavior: smooth; }
+/* HERO */
+.hero{padding:74px 0 42px}
+.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:52px;align-items:center}
+.badge{
+  display:inline-flex;padding:7px 12px;border:1px solid #c7d6fb;
+  background:#f1f5ff;border-radius:100px;color:var(--blue);
+  font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700
+}
+.hero h1{font-family:'Outfit';font-size:clamp(54px,6.9vw,86px);line-height:.95;letter-spacing:-4px;margin:22px 0 20px}
+.hero h1 span{color:var(--blue)}
+.hero p{font-size:17px;line-height:1.75;color:var(--muted);max-width:650px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 20px;border-radius:10px;font-size:13px;font-weight:600;transition:.2s}
+.btn.primary{background:var(--blue);color:white;box-shadow:0 10px 24px rgba(22,89,232,.18)}
+.btn.secondary{background:white;border:1px solid var(--line);color:#344054}
+.btn:hover{transform:translateY(-2px)}
+.hero-stage{
+  position:relative;min-height:480px;border-radius:32px;
+  background:linear-gradient(145deg,#edf3ff,#fafcff);
+  border:1px solid #dfe8fb;overflow:hidden;box-shadow:var(--shadow)
+}
+.hero-stage:before{
+  content:"";position:absolute;width:320px;height:320px;border-radius:42% 58% 66% 34%;
+  background:rgba(22,89,232,.11);right:52px;top:70px;transform:rotate(-15deg)
+}
+.avatar{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:250px;height:320px;border-radius:130px 130px 28px 28px;
+  background:linear-gradient(160deg,#1b64e8,#153769);
+  display:grid;place-items:center;color:white;text-align:center;
+  box-shadow:0 28px 70px rgba(18,60,143,.25)
+}
+.avatar strong{font-family:'Outfit';font-size:88px;line-height:1}
+.avatar span{display:block;font-size:10px;opacity:.72;margin-top:7px}
+.float{position:absolute;background:white;border:1px solid #e0e8f7;border-radius:15px;padding:15px 16px;box-shadow:var(--shadow2);min-width:145px}
+.float strong{font-family:'Outfit';font-size:23px}.float span{display:block;font-size:8px;color:var(--muted);margin-top:3px}
+.f1{right:25px;top:70px}.f2{right:18px;top:167px}.f3{right:32px;top:264px}.f4{left:24px;bottom:40px}.f4 strong{color:var(--green)}
+.proofstrip{
+  margin-top:28px;background:white;border:1px solid var(--line);border-radius:18px;
+  padding:20px 24px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px;
+  box-shadow:var(--shadow2)
+}
+.proofstrip div{background:#fbfcff;border:1px solid #e9eef8;border-radius:10px;text-align:center;padding:12px 8px;font-family:'Outfit';font-weight:700;font-size:12px}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    overflow-x: hidden;
-  }
+/* CAPABILITIES */
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.cap{background:white;border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow2)}
+.cap-icon{width:42px;height:42px;border-radius:13px;background:var(--soft);display:grid;place-items:center;color:var(--blue);font-size:18px;margin-bottom:18px}
+.cap h3{font-family:'Outfit';font-size:17px;margin-bottom:7px}
+.cap p{font-size:10.5px;line-height:1.65;color:var(--muted)}
 
-  /* No custom cursor */
+/* HOW I WORK */
+.work-process{
+  background:white;border:1px solid var(--line);border-radius:28px;
+  box-shadow:var(--shadow);overflow:hidden;margin-top:30px
+}
+.work-process-grid{display:grid;grid-template-columns:.95fr 1.05fr;min-height:520px}
+.process-visual{
+  position:relative;background:
+    radial-gradient(circle at 55% 45%,rgba(22,89,232,.18),transparent 34%),
+    linear-gradient(145deg,#f8fbff,#eef4ff);
+  border-right:1px solid #e5ecf8;overflow:hidden
+}
+.process-device{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:260px;height:400px;border:1px solid #d7e2f7;border-radius:36px;background:white;
+  box-shadow:0 30px 70px rgba(34,68,136,.16);padding:22px
+}
+.device-top{height:16px;width:86px;margin:auto;background:#eef2f7;border-radius:20px}
+.device-screen{margin-top:18px;background:#f7f9fc;border-radius:20px;height:300px;padding:16px}
+.fake-ad{background:white;border:1px solid #e4eaf4;border-radius:13px;padding:12px;margin-bottom:11px}
+.fake-ad .line{height:6px;background:#e7ecf4;border-radius:10px;margin-bottom:6px}.fake-ad .line:nth-child(2){width:66%}
+.fake-ad .image{height:80px;border-radius:9px;background:linear-gradient(135deg,#dce7ff,#b9ccff);margin-top:10px}
+.floating-chip{
+  position:absolute;background:white;border:1px solid #e0e8f7;border-radius:14px;padding:13px 15px;
+  box-shadow:var(--shadow2);font-size:9px;color:var(--muted)
+}
+.floating-chip strong{display:block;font-family:'Outfit';font-size:14px;color:var(--ink);margin-bottom:3px}
+.chip1{left:8%;top:18%}.chip2{right:6%;top:34%}.chip3{left:10%;bottom:18%}
+.process-copy{padding:58px 52px}
+.process-copy h2{font-family:'Outfit';font-size:40px;line-height:1.05;letter-spacing:-1.5px}
+.steps{margin-top:28px;display:grid;gap:22px}
+.step{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start}
+.step-no{width:34px;height:34px;border-radius:50%;background:#edf3ff;color:var(--blue);display:grid;place-items:center;font-size:10px;font-weight:700}
+.step h3{font-family:'Outfit';font-size:16px;margin-bottom:5px}.step p{font-size:10.5px;color:var(--muted);line-height:1.6}
 
-  /* Nav */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(to bottom, rgba(243,242,239,0.97), transparent);
-    backdrop-filter: blur(10px);
-  }
-  .nav-logo {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-  .nav-logo span { color: var(--accent); }
-  .nav-links { display: flex; gap: 36px; }
-  .nav-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
+/* TRUST / BENEFITS */
+.trust-section{
+  position:relative;background:#eaf1ff;overflow:hidden
+}
+.trust-section:after{
+  content:"";position:absolute;width:540px;height:540px;border-radius:50%;
+  background:rgba(22,89,232,.07);right:-120px;top:-190px
+}
+.trust-inner{position:relative;z-index:1}
+.trust-head{text-align:center;max-width:760px;margin:auto}
+.trust-badge{display:inline-block;background:var(--blue);color:white;font-size:8px;padding:6px 9px;border-radius:6px;font-weight:700;margin-bottom:12px}
+.trust-head h2{font-family:'Outfit';font-size:38px;letter-spacing:-1.3px}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:34px 48px;margin-top:48px}
+.trust-item{display:grid;grid-template-columns:42px 1fr;gap:14px}
+.ticon{width:36px;height:36px;border-radius:12px;background:white;color:var(--blue);display:grid;place-items:center;box-shadow:var(--shadow2)}
+.trust-item h3{font-family:'Outfit';font-size:15px;margin-bottom:6px}.trust-item p{font-size:10px;line-height:1.6;color:#62718a}
+.trust-callout{
+  margin-top:38px;background:white;border:1px solid #dbe6fa;border-radius:14px;
+  padding:17px 19px;font-size:10px;line-height:1.6;color:#53647f
+}
+.trust-callout strong{color:var(--blue)}
 
-  /* Hero */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 120px 60px 60px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(10,102,194,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(5,118,66,0.04) 0%, transparent 60%);
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image: linear-gradient(rgba(10,102,194,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(10,102,194,0.05) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-  }
-  .hero-content { position: relative; z-index: 1; max-width: 700px; }
-  .hero-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(10,102,194,0.08);
-    border: 1px solid rgba(10,102,194,0.2);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    animation: fadeUp 0.6s ease both;
-  }
-  .hero-tag::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--accent2);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-  .hero h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(48px, 7vw, 88px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -3px;
-    margin-bottom: 24px;
-    animation: fadeUp 0.6s 0.1s ease both;
-  }
-  .hero h1 .line2 { color: var(--accent); }
-  .hero-desc {
-    font-size: 18px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    max-width: 520px;
-    margin-bottom: 48px;
-    font-weight: 300;
-    animation: fadeUp 0.6s 0.2s ease both;
-  }
-  .hero-cta {
-    display: flex; gap: 16px; flex-wrap: wrap;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--accent);
-    color: white;
-    padding: 14px 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  .btn-primary:hover { background: #084d91; transform: translateY(-2px); }
-  .btn-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    padding: 14px 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 400;
-    transition: all 0.2s;
-  }
-  .btn-outline:hover { border-color: var(--accent); color: var(--text); }
+/* SERVICES */
+.services-shell{
+  margin-top:32px;background:linear-gradient(145deg,#17356f,#1d4ea4);
+  border-radius:28px;padding:34px;color:white;box-shadow:0 24px 60px rgba(22,89,232,.20)
+}
+.services-head{text-align:center;max-width:760px;margin:auto}
+.services-head .mini{display:inline-block;background:#2c72ff;color:white;border-radius:6px;padding:6px 9px;font-size:8px;font-weight:700}
+.services-head h2{font-family:'Outfit';font-size:38px;margin-top:12px}.services-head p{font-size:10.5px;line-height:1.65;color:rgba(255,255,255,.74);margin-top:8px}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.service{
+  background:white;color:var(--ink);border-radius:18px;padding:22px;
+  box-shadow:0 14px 35px rgba(8,27,69,.18);position:relative
+}
+.service-tag{display:inline-block;background:#eef4ff;color:var(--blue);border-radius:6px;padding:6px 8px;font-size:7px;font-weight:700}
+.service h3{font-family:'Outfit';font-size:19px;margin:12px 0 4px}.service .for{font-size:8px;color:var(--muted);line-height:1.5}
+.price{font-family:'Outfit';font-size:19px;font-weight:800;color:var(--blue);margin:16px 0 12px}
+.service ul{list-style:none;display:grid;gap:7px}
+.service li{font-size:8.5px;color:#5f6d82;line-height:1.45;padding-left:14px;position:relative}
+.service li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.service-link{display:inline-block;margin-top:16px;color:var(--blue);font-size:8.5px;font-weight:700}
+.scope{margin-top:14px;padding-top:12px;border-top:1px solid #edf1f7;color:#8a94a5;font-size:7.3px;line-height:1.5}
 
-  /* Stats bar */
-  .stats-bar {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 32px 60px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-  .stat-item {
-    padding: 0 40px;
-    border-right: 1px solid var(--border);
-    text-align: center;
-  }
-  .stat-item:first-child { padding-left: 0; }
-  .stat-item:last-child { border-right: none; }
-  .stat-number {
-    font-family: 'Outfit', sans-serif;
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--accent);
-    letter-spacing: -1px;
-  }
-  .stat-label {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
+/* CASE STUDY */
+.case-head{max-width:760px}
+.featured{
+  margin-top:30px;background:white;border:1px solid var(--line);border-radius:28px;
+  overflow:hidden;box-shadow:var(--shadow)
+}
+.featured-top{display:grid;grid-template-columns:.68fr 1.32fr;gap:18px;padding:28px}
+.case-intro{background:linear-gradient(155deg,#f6f9ff,#edf3ff);border:1px solid #dce6fb;border-radius:20px;padding:26px}
+.case-intro h3{font-family:'Outfit';font-size:34px;line-height:1.04;letter-spacing:-1.3px;margin:8px 0 12px}
+.case-intro p{font-size:10.5px;line-height:1.7;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:15px}
+.tag{font-size:7.7px;background:white;border:1px solid #dce6fb;color:var(--blue);font-weight:600;padding:6px 9px;border-radius:100px}
+.metric-stack{display:grid;gap:9px;margin-top:22px}
+.metric-line{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;background:white;border:1px solid #e3eaf8;border-radius:13px;padding:14px}
+.metric-icon{width:40px;height:40px;border-radius:12px;background:#edf3ff;color:var(--blue);display:grid;place-items:center}
+.metric-line strong{font-family:'Outfit';font-size:16px}.metric-line small{display:block;color:var(--muted);font-size:7.6px;margin-top:3px}
+.delta{font-size:9px;color:var(--green);font-weight:700}
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.data-card{background:#fbfcff;border:1px solid #e3eaf7;border-radius:19px;padding:18px;min-width:0}
+.data-card h4{font-family:'Outfit';font-size:14px}.data-sub{font-size:7.5px;color:var(--muted);margin-top:2px;margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.kpi{background:white;border:1px solid #e6ebf5;border-radius:9px;padding:9px 7px;text-align:center}
+.kpi strong{font-family:'Outfit';font-size:12px}.kpi span{display:block;font-size:6.2px;color:var(--muted);margin-top:3px}
+.chart{height:175px;border-left:1px solid #dfe6f2;border-bottom:1px solid #dfe6f2;position:relative;margin:16px 8px 10px}
+.chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.months{display:flex;justify-content:space-between;font-size:6.5px;color:#7c8697;margin:0 3px}
+.case-table{width:100%;border-collapse:collapse;font-size:7px;margin-top:13px}.table-wrap{overflow-x:auto}
+.case-table th,.case-table td{padding:7px 5px;border-bottom:1px solid #e9eef7;text-align:left;white-space:nowrap}
+.case-table th{color:#7e889a}.case-table tr:last-child{background:#eaf2ff;color:#0f4fbf;font-weight:700}
+.meta-frame{border:1px solid #e1e7f1;border-radius:11px;overflow:hidden;background:white;margin-top:10px}
+.meta-frame img{width:100%}.meta-caption{font-size:6.5px;color:#8590a2;padding:7px 9px;border-top:1px solid #edf0f5}
+.meta-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.meta-stat{background:white;border:1px solid #e3eaf6;border-radius:9px;padding:9px 7px;text-align:center}
+.meta-stat strong{font-family:'Outfit';font-size:12px}.meta-stat span{display:block;font-size:6px;color:var(--muted);margin-top:2px}
+.note{grid-column:1/-1;background:#f1f6ff;border:1px solid #dce7fb;border-radius:11px;padding:10px 12px;font-size:7.6px;line-height:1.55;color:#607086}
 
-  /* Section base */
-  section { padding: 100px 60px; }
-  .section-label {
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-    font-weight: 500;
-  }
-  .section-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 800;
-    letter-spacing: -2px;
-    margin-bottom: 60px;
-    line-height: 1.1;
-  }
+/* PROJECT LIBRARY */
+.library-head{margin-top:66px}
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 22px}
+.filter-btn{border:1px solid var(--line);background:white;color:#475467;border-radius:100px;padding:9px 13px;font-size:9px;font-weight:600;cursor:pointer}
+.filter-btn.active,.filter-btn:hover{background:var(--blue);border-color:var(--blue);color:white}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.project-card{background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow2);transition:.2s}
+.project-card:hover{transform:translateY(-4px)}
+.project-visual{height:145px;background:linear-gradient(145deg,#edf3ff,#f8fbff);display:grid;place-items:center;overflow:hidden;border-bottom:1px solid #edf1f7}
+.project-visual img{width:100%;height:100%;object-fit:cover}
+.project-visual.brand{font-family:'Outfit';font-weight:800;font-size:28px;color:var(--blue)}
+.project-body{padding:20px}
+.project-brand{font-size:8px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.project-body h3{font-family:'Outfit';font-size:18px;line-height:1.12;margin:7px 0}
+.project-body p{font-size:9.5px;color:var(--muted);line-height:1.6}
+.project-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:13px}
+.project-tags span{font-size:6.8px;padding:5px 7px;border-radius:100px;background:#eef4ff;color:var(--blue);font-weight:600}
+.project-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px}
+.pm{background:#f8faff;border:1px solid #e8edf7;border-radius:9px;padding:9px 7px}
+.pm strong{display:block;font-family:'Outfit';font-size:12px}.pm span{display:block;font-size:6px;color:var(--muted);margin-top:2px}
+.view{display:inline-block;margin-top:15px;font-size:8.5px;color:var(--blue);font-weight:700}
+.hidden{display:none!important}
 
-  /* About */
-  .about { background: var(--surface); }
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-  .about-text p {
-    font-size: 17px;
-    line-height: 1.8;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-    font-weight: 300;
-  }
-  .about-text p strong { color: var(--text); font-weight: 500; }
-  .about-highlights { display: flex; flex-direction: column; gap: 20px; }
-  .highlight-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    transition: border-color 0.2s;
-  }
-  .highlight-card:hover { border-color: var(--accent); }
-  .highlight-card h4 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--accent2);
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .highlight-card p {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
+/* EXPERIENCE */
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.exp{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow2)}
+.exp h3{font-family:'Outfit';font-size:19px}.exp .role{font-size:9px;color:var(--blue);font-weight:600;margin-top:3px}
+.exp p{font-size:9px;line-height:1.6;color:var(--muted);margin-top:13px}
 
-  /* Skills */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .skill-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .skill-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-  .skill-card:hover { border-color: rgba(10,102,194,0.3); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(10,102,194,0.08); }
-  .skill-card:hover::before { transform: scaleX(1); }
-  .skill-icon {
-    font-size: 28px;
-    margin-bottom: 16px;
-  }
-  .skill-card h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 16px;
-  }
-  .skill-tag {
-    background: rgba(10,102,194,0.08);
-    border: 1px solid rgba(10,102,194,0.15);
-    color: var(--accent);
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 100px;
-    letter-spacing: 0.3px;
-  }
+/* CTA */
+.cta{padding:76px 0 90px}
+.cta-box{background:linear-gradient(90deg,#1659e8,#2d6ff3);color:white;border-radius:26px;padding:34px 38px;display:flex;justify-content:space-between;align-items:center;gap:24px;box-shadow:0 24px 60px rgba(22,89,232,.24)}
+.cta-box h2{font-family:'Outfit';font-size:30px}.cta-box p{font-size:9.5px;line-height:1.6;color:rgba(255,255,255,.77);margin-top:5px}
+.cta-btn{background:white;color:var(--blue);padding:13px 20px;border-radius:10px;font-size:10px;font-weight:700}
+footer{padding:24px 0 34px;color:#818b9d;font-size:8.5px}
+.foot{display:flex;justify-content:space-between;gap:20px}
 
-  /* Experience */
-  .experience { background: var(--surface); }
-  .exp-timeline { display: flex; flex-direction: column; gap: 2px; }
-  .exp-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .exp-card:hover { border-color: rgba(10,102,194,0.3); box-shadow: 0 4px 16px rgba(10,102,194,0.08); }
-  .exp-header {
-    padding: 32px 40px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 20px;
-    align-items: start;
-    cursor: pointer;
-  }
-  .exp-company {
-    font-family: 'Outfit', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-  .exp-role {
-    font-size: 15px;
-    color: var(--accent);
-    margin-top: 4px;
-    font-weight: 400;
-  }
-  .exp-date {
-    font-size: 13px;
-    color: var(--text-muted);
-    text-align: right;
-    white-space: nowrap;
-    margin-top: 4px;
-  }
-  .exp-body {
-    padding: 0 40px 32px;
-    display: none;
-  }
-  .exp-body.open { display: block; }
-  .exp-body ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .exp-body ul li {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    padding-left: 20px;
-    position: relative;
-  }
-  .exp-body ul li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--accent2);
-    font-size: 13px;
-  }
-  .exp-metrics {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-  .exp-metric {
-    background: rgba(10,102,194,0.06);
-    border: 1px solid rgba(10,102,194,0.15);
-    border-radius: 8px;
-    padding: 12px 20px;
-    text-align: center;
-  }
-  .exp-metric .num {
-    font-family: 'Outfit', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--accent2);
-    letter-spacing: -0.5px;
-  }
-  .exp-metric .lbl {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    letter-spacing: 0.3px;
-  }
-  .exp-toggle {
-    font-size: 20px;
-    color: var(--text-muted);
-    transition: transform 0.2s;
-    margin-top: 4px;
-  }
-  .exp-card.open .exp-toggle { transform: rotate(45deg); }
-
-  /* Portfolio section */
-  .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-  }
-  .portfolio-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 40px;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .portfolio-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at top left, rgba(10,102,194,0.04), transparent 60%);
-    pointer-events: none;
-  }
-  .portfolio-card:hover { border-color: rgba(10,102,194,0.3); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(10,102,194,0.08); }
-  .portfolio-card h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .portfolio-card .sub {
-    font-size: 13px;
-    color: var(--accent);
-    margin-bottom: 20px;
-  }
-  .portfolio-card p {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .metrics-row {
-    display: flex;
-    gap: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-  .metric-item .val {
-    font-family: 'Outfit', sans-serif;
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--accent2);
-    letter-spacing: -0.5px;
-  }
-  .metric-item .key {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Contact */
-  .contact { background: #EBF3FB; text-align: center; border-top: 1px solid rgba(10,102,194,0.1); }
-  .contact-inner { max-width: 600px; margin: 0 auto; }
-  .contact h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(36px, 5vw, 64px);
-    font-weight: 800;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
-  }
-  .contact p {
-    font-size: 17px;
-    color: var(--text-muted);
-    margin-bottom: 48px;
-    line-height: 1.7;
-    font-weight: 300;
-  }
-  .contact-links {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .contact-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-  .contact-link.primary {
-    background: var(--accent);
-    color: white;
-  }
-  .contact-link.primary:hover { background: #084d91; transform: translateY(-2px); }
-  .contact-link.secondary {
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
-  .contact-link.secondary:hover { border-color: var(--accent); color: var(--text); }
-
-  /* Footer */
-  footer {
-    padding: 32px 60px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  footer p { font-size: 13px; color: var(--text-muted); }
-
-  /* Photo card */
-  .photo-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 20px 24px;
-    width: fit-content;
-  }
-  .photo-placeholder {
-    width: 56px; height: 56px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: white;
-    flex-shrink: 0;
-    overflow: hidden;
-  }
-  .photo-placeholder img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .photo-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%; height: 100%;
-  }
-  .photo-name {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--text);
-  }
-  .photo-title {
-    font-size: 13px;
-    color: var(--accent);
-    margin-top: 2px;
-  }
-  .photo-location {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  /* Channel icons */
-  .channel-icons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .channel-icon {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-  .channel-icon img {
-    width: 18px; height: 18px;
-    object-fit: contain;
-  }
-
-  /* Animations */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .reveal {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: all 0.6s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 768px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
-    .stats-bar { padding: 24px; grid-template-columns: repeat(2,1fr); gap: 24px; }
-    .stat-item { border-right: none; padding: 0; }
-    section { padding: 60px 24px; }
-    .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    .skills-grid { grid-template-columns: 1fr; }
-    .portfolio-grid { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 12px; text-align: center; }
-  }
+@media(max-width:980px){
+  .hero-grid,.work-process-grid,.featured-top{grid-template-columns:1fr}
+  .process-visual{min-height:440px;border-right:0;border-bottom:1px solid #e5ecf8}
+  .cap-grid,.project-grid,.exp-grid{grid-template-columns:repeat(2,1fr)}
+  .trust-grid{grid-template-columns:repeat(2,1fr)}
+  .services-grid{grid-template-columns:1fr}
+  .case-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .container{width:min(100% - 28px,1180px)}
+  .links a:not(.nav-cta){display:none}
+  .hero{padding-top:48px}.hero h1{letter-spacing:-2.5px}
+  .hero-stage{min-height:390px}.avatar{width:215px;height:285px}
+  .float{transform:scale(.86)}.f1{right:4px}.f2{right:-4px}.f3{right:4px}
+  .proofstrip{grid-template-columns:repeat(2,1fr)}
+  .cap-grid,.project-grid,.trust-grid,.exp-grid{grid-template-columns:1fr}
+  .process-copy{padding:34px 24px}
+  .trust-grid{gap:22px}
+  .featured{border-radius:20px}.featured-top{padding:16px}
+  .kpis,.meta-stats{grid-template-columns:repeat(2,1fr)}
+  .cta-box{flex-direction:column;align-items:flex-start}
+  .foot{flex-direction:column}
+}
 </style>
 </head>
+
 <body>
 
-
-
 <nav>
-  <div class="nav-logo">Fikry<span>.</span></div>
-  <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#skills">Skills</a>
-    <a href="#experience">Experience</a>
-    <a href="#work">Work</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
+  <div class="container nav">
+    <a class="logo" href="#home"><span class="logo-mark">FA</span>Fikry Aditya</a>
+    <div class="links">
+      <a href="#capabilities">Capabilities</a>
+      <a href="#process">How I Work</a>
+      <a href="#services">Services</a>
+      <a href="#work">Case Studies</a>
+      <a href="#experience">Experience</a>
+      <a class="nav-cta" href="#contact">Work With Me →</a>
+    </div>
   </div>
 </nav>
 
-<!-- HERO -->
+<main id="home">
+
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-tag">Available for freelance & selected opportunities</div>
-    <h1>
-      Fikry<br>
-      <span class="line2">Aditya.</span>
-    </h1>
-    <p class="hero-desc">
-      Performance marketing professional with 3+ years driving measurable growth across paid media, CRM, and e-commerce. I manage budgets, build systems, and let data make the decisions.
-    </p>
-    <div class="hero-cta">
-      <a href="#work" class="btn-primary">View My Work ↓</a>
-      <a href="#services" class="btn-outline">Work With Me</a>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="badge">Performance Marketing · E-commerce · Growth</div>
+        <h1>Results that scale.<br><span>Strategies that deliver.</span></h1>
+        <p>I help e-commerce and digital businesses grow through paid acquisition, marketplace optimisation, website conversion, CRM, and data-led campaign decisions.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#services">Explore Services →</a>
+          <a class="btn secondary" href="#work">View Case Studies</a>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <div class="avatar"><div><strong>FA</strong><span>Performance Marketing<br>Jakarta, Indonesia</span></div></div>
+        <div class="float f1"><strong>Rp400M+</strong><span>Monthly budget managed</span></div>
+        <div class="float f2"><strong>3.1x</strong><span>E-commerce revenue growth</span></div>
+        <div class="float f3"><strong>5.3x</strong><span>Shopee ROAS at scale</span></div>
+        <div class="float f4"><strong>−42.55%</strong><span>Acquisition CPA reduction</span></div>
+      </div>
+    </div>
+
+    <div class="proofstrip">
+      <div>Meta Ads</div><div>Shopee Ads</div><div>TikTok Ads</div><div>Google Ads</div><div>GA4 / GTM</div><div>CRM</div>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-bar reveal">
-  <div class="stat-item">
-    <div class="stat-number">Rp400M+</div>
-    <div class="stat-label">Monthly Budget Managed</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-number">3.1x</div>
-    <div class="stat-label">Revenue Growth (5 months)</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-number">5.3x</div>
-    <div class="stat-label">Peak ROAS Achieved</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-number">3+</div>
-    <div class="stat-label">Years Experience</div>
-  </div>
-</div>
+<section class="section" id="capabilities">
+  <div class="container">
+    <div class="kicker">What I Help With</div>
+    <h2 class="title">From traffic to conversion, not just clicks.</h2>
+    <p class="desc">The work is organised around business problems rather than platform buttons.</p>
 
-<!-- ABOUT -->
-<section class="about" id="about">
-  <div class="section-label">About Me</div>
-  <div class="section-title">The person<br>behind the numbers.</div>
-  <div class="about-grid reveal">
-    <div class="about-text">
-      <div class="photo-card">
-        <div class="photo-placeholder">
-          <div class="photo-fallback">FA</div>
-        </div>
-        <div class="photo-info">
-          <div class="photo-name">Fikry Aditya</div>
-          <div class="photo-title">Performance Marketing Specialist</div>
-          <div class="photo-location">Jakarta, Indonesia</div>
-        </div>
-      </div>
-      <p style="margin-top:28px">I'm a <strong>performance-driven digital marketer</strong> based in Jakarta. My work sits at the intersection of paid media, data analysis, and campaign execution. I don't just run ads, I build systems that scale.</p>
-      <p>Across every role, I've consistently operated with <strong>full ownership</strong> — setting KPIs, managing budgets independently, coordinating cross-functional teams, and delivering results without needing to be pushed.</p>
-      <p>I believe great marketing is about <strong>hypotheses, testing, and iteration</strong>. Every campaign is an experiment. Every data point is a signal.</p>
-    </div>
-    <div class="about-highlights">
-      <div class="highlight-card">
-        <h4>Current Role</h4>
-        <p>Performance Marketing Specialist at Porto X, managing ~Rp400M/month across Meta, TikTok, Google Ads, and e-commerce platforms.</p>
-      </div>
-      <div class="highlight-card">
-        <h4>What I bring</h4>
-        <p>Budget ownership, ROAS optimisation, creative brief writing, conversion tracking setup, and cross-functional coordination with Legal, Finance, and Procurement.</p>
-      </div>
-      <div class="highlight-card">
-        <h4>Currently learning</h4>
-        <p>Data automation — building reporting pipelines that feed campaign data directly into dashboards without manual input.</p>
-      </div>
+    <div class="cap-grid">
+      <div class="cap"><div class="cap-icon">↗</div><h3>E-commerce & Marketplace Growth</h3><p>Shopee Ads, Meta CPAS, marketplace performance, ROAS optimisation and commercial scaling.</p></div>
+      <div class="cap"><div class="cap-icon">◎</div><h3>Paid Acquisition</h3><p>Meta, Google and TikTok campaign structure, testing, retargeting, budget allocation and optimisation.</p></div>
+      <div class="cap"><div class="cap-icon">⌁</div><h3>Website Growth & Conversion</h3><p>Qualified traffic, landing-page funnels, retargeting, conversion tracking and optimisation toward leads or sales.</p></div>
+      <div class="cap"><div class="cap-icon">◫</div><h3>App Growth</h3><p>User acquisition, install-to-signup funnel performance and app conversion monitoring.</p></div>
+      <div class="cap"><div class="cap-icon">✦</div><h3>CRM & Retention</h3><p>Segmentation, push notifications, automation and customer-journey campaigns that support retention.</p></div>
+      <div class="cap"><div class="cap-icon">⌁</div><h3>Tracking & Analytics</h3><p>GA4, GTM, pixel/event measurement, attribution thinking and reporting tied back to business outcomes.</p></div>
     </div>
   </div>
 </section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-label">Skills & Tools</div>
-  <div class="section-title">What I work with.</div>
-  <div class="skills-grid reveal">
-    <div class="skill-card">
-      <div class="skill-icon">📊</div>
-      <h3>Paid Media</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Campaign setup, budget management, audience segmentation, A/B testing, ROAS and CPA optimisation across multiple platforms.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">Meta Ads</span>
-        <span class="skill-tag">TikTok Ads</span>
-        <span class="skill-tag">Google Ads</span>
-        <span class="skill-tag">Shopee Ads</span>
-        <span class="skill-tag">SHAREit</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">🔍</div>
-      <h3>Tracking & Analytics</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Conversion tracking setup, event implementation, attribution analysis, and dashboard building for real-time performance monitoring.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">GTM</span>
-        <span class="skill-tag">GA4</span>
-        <span class="skill-tag">AppsFlyer</span>
-        <span class="skill-tag">Looker Studio</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">🌐</div>
-      <h3>Website Management</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Landing page creation, content updates, campaign page management, and website maintenance across multiple CMS platforms.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">WordPress</span>
-        <span class="skill-tag">Wix</span>
-        <span class="skill-tag">Magento</span>
-        <span class="skill-tag">HubSpot CMS</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">🤝</div>
-      <h3>CRM & Lead Management</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Customer journey mapping, retention systems, lead pipeline management, and sales funnel coordination.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">HubSpot</span>
-        <span class="skill-tag">Freshworks</span>
-        <span class="skill-tag">Insider</span>
-        <span class="skill-tag">Inside CRM</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">📝</div>
-      <h3>Campaign Operations</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Creative brief writing, project tracker management, stakeholder reporting, and cross-functional coordination.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">Google Sheets</span>
-        <span class="skill-tag">Notion</span>
-        <span class="skill-tag">Asana</span>
-        <span class="skill-tag">Trello</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <div class="skill-icon">🎨</div>
-      <h3>Creative & Design</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">Ad creative direction, brief writing, content coordination, and basic design execution for campaign assets.</p>
-      <div class="skill-tags">
-        <span class="skill-tag">Canva</span>
-        <span class="skill-tag">Photoshop</span>
-        <span class="skill-tag">Premiere Pro</span>
-        <span class="skill-tag">Python</span>
-      </div>
-    </div>
-  </div>
-</section>
+<section class="section" id="process">
+  <div class="container">
+    <div class="kicker">How I Work</div>
+    <h2 class="title">A structured loop from diagnosis to growth.</h2>
+    <p class="desc">The process starts from the business problem, not from opening Ads Manager.</p>
 
-<!-- EXPERIENCE -->
-<section class="experience" id="experience">
-  <div class="section-label">Experience</div>
-  <div class="section-title">Where I've worked.</div>
-  <div class="exp-timeline reveal">
+    <div class="work-process">
+      <div class="work-process-grid">
+        <div class="process-visual">
+          <div class="process-device">
+            <div class="device-top"></div>
+            <div class="device-screen">
+              <div class="fake-ad"><div class="line"></div><div class="line"></div><div class="image"></div></div>
+              <div class="fake-ad"><div class="line"></div><div class="line"></div><div class="image" style="background:linear-gradient(135deg,#e6edff,#cfddff)"></div></div>
+            </div>
+          </div>
+          <div class="floating-chip chip1"><strong>Business Goal</strong>Revenue, leads or growth</div>
+          <div class="floating-chip chip2"><strong>Performance Signal</strong>CPA · ROAS · CVR</div>
+          <div class="floating-chip chip3"><strong>Next Action</strong>Scale · test · fix</div>
+        </div>
 
-    <div class="exp-card open">
-      <div class="exp-header" onclick="toggleExp(this)">
-        <div>
-          <div class="exp-company">Porto X</div>
-          <div class="exp-role">Performance Marketing Specialist</div>
-        </div>
-        <div>
-          <div class="exp-date">Oct 2025 — Present</div>
-          <div class="exp-toggle" style="text-align:right">+</div>
-        </div>
-      </div>
-      <div class="exp-body open">
-        <div class="channel-icons">
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Meta_Platforms_Inc._logo.svg/512px-Meta_Platforms_Inc._logo.svg.png" alt="Meta">Meta Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png" alt="TikTok">TikTok Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Ads_logo.svg/512px-Google_Ads_logo.svg.png" alt="Google Ads">Google Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Shopee.svg/512px-Shopee.svg.png" alt="Shopee">Shopee CPAS</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Analytics_Logo.svg/512px-Google_Analytics_Logo.svg.png" alt="GA4">GA4</div>
-          <div class="channel-icon"><img src="https://www.gstatic.com/analytics-suite/header/suite/v2/ic_tag_manager.svg" alt="GTM">GTM</div>
-        </div>
-        <div class="exp-metrics">
-          <div class="exp-metric">
-            <div class="num">Rp400M+</div>
-            <div class="lbl">Monthly Budget</div>
-          </div>
-          <div class="exp-metric">
-            <div class="num">3.1x</div>
-            <div class="lbl">Revenue Growth</div>
-          </div>
-          <div class="exp-metric">
-            <div class="num">5.3x</div>
-            <div class="lbl">Peak ROAS</div>
-          </div>
-          <div class="exp-metric">
-            <div class="num">+215%</div>
-            <div class="lbl">Purchase Volume</div>
+        <div class="process-copy">
+          <div class="kicker">Performance Workflow</div>
+          <h2>Plan, execute, measure.</h2>
+
+          <div class="steps">
+            <div class="step"><div class="step-no">1</div><div><h3>Strategy & Research</h3><p>Understand revenue, ad spend, funnel performance, business targets and where the biggest growth bottleneck sits.</p></div></div>
+            <div class="step"><div class="step-no">2</div><div><h3>Launch, Test & Optimise</h3><p>Build or restructure campaigns, test audiences and creatives, monitor efficiency, and move budget toward stronger signals.</p></div></div>
+            <div class="step"><div class="step-no">3</div><div><h3>Measure Business Outcomes</h3><p>Review advertising performance against actual marketplace, website, app or CRM outcomes instead of relying on platform attribution alone.</p></div></div>
           </div>
         </div>
-        <ul>
-          <li>Independently managed ~Rp400M monthly ad budget across Meta, TikTok, Google Ads, and e-commerce platforms, growing Gross Revenue from Rp609M to Rp1.9B+ in 5 months.</li>
-          <li>Scaled Shopee CPAS ROI from 4.7x to 5.3x over 6 months through continuous optimisation and data-driven budget reallocation.</li>
-          <li>Wrote creative briefs independently and coordinated end-to-end with the creative team to deliver campaign assets on time across all channels.</li>
-          <li>Planned and executed co-branded and marketplace partnership campaigns including Shopee mega campaigns, flash sales, and brand bundling promos.</li>
-          <li>Set up and maintained conversion tracking using GTM and GA4, and built live performance dashboards in Google Sheets and Looker Studio.</li>
-          <li>Navigated cross-functional coordination with Legal, Finance, Procurement, IT, and Expedition teams to bring campaigns to market.</li>
-        </ul>
       </div>
     </div>
-
-    <div class="exp-card" style="margin-top:12px">
-      <div class="exp-header" onclick="toggleExp(this)">
-        <div>
-          <div class="exp-company">Your Comms Group</div>
-          <div class="exp-role">CRM Coordinator</div>
-        </div>
-        <div>
-          <div class="exp-date">Mar 2024 — Jul 2025</div>
-          <div class="exp-toggle" style="text-align:right">+</div>
-        </div>
-      </div>
-      <div class="exp-body">
-        <div class="channel-icons">
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/HubSpot_Logo.svg/512px-HubSpot_Logo.svg.png" alt="HubSpot">HubSpot</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/WordPress_blue_logo.svg/512px-WordPress_blue_logo.svg.png" alt="WordPress">WordPress</div>
-          <div class="channel-icon">🐍 Python</div>
-          <div class="channel-icon">📊 Google Sheets</div>
-        </div>
-        <ul>
-          <li>Collaborated with marketing and sales teams to map the customer journey and build a structured retention system.</li>
-          <li>Built and managed marketing landing pages and email campaigns in HubSpot and WordPress.</li>
-          <li>Maintained a live lead tracker and coordinated inbound lead assignment with the sales team.</li>
-          <li>Coordinated 2 admin staff on data scraping and validation tasks, managing workload distribution and quality control.</li>
-          <li>Utilised Python for lead data mining, contact validation, and database cleansing.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="exp-card" style="margin-top:12px">
-      <div class="exp-header" onclick="toggleExp(this)">
-        <div>
-          <div class="exp-company">MAPAN</div>
-          <div class="exp-role">Digital Marketing Officer</div>
-        </div>
-        <div>
-          <div class="exp-date">Mar 2023 — Jan 2024</div>
-          <div class="exp-toggle" style="text-align:right">+</div>
-        </div>
-      </div>
-      <div class="exp-body">
-        <div class="channel-icons">
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Meta_Platforms_Inc._logo.svg/512px-Meta_Platforms_Inc._logo.svg.png" alt="Meta">Meta Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/TikTok_logo.svg/512px-TikTok_logo.svg.png" alt="TikTok">TikTok Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Ads_logo.svg/512px-Google_Ads_logo.svg.png" alt="Google Ads">Google Ads</div>
-          <div class="channel-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Analytics_Logo.svg/512px-Google_Analytics_Logo.svg.png" alt="GA4">GA4</div>
-          <div class="channel-icon"><img src="https://www.gstatic.com/analytics-suite/header/suite/v2/ic_tag_manager.svg" alt="GTM">GTM</div>
-          <div class="channel-icon">📱 AppsFlyer</div>
-          <div class="channel-icon">🔔 Insider CRM</div>
-          <div class="channel-icon">🌐 WordPress</div>
-        </div>
-        <ul>
-          <li>Executed paid campaigns across Meta, TikTok, Google Ads, and SHAREit, improving signup rate from 58% to 68% and purchase rate from 3.16% to 6.09%.</li>
-          <li>Set up conversion tracking using GTM, AppsFlyer, and GA4, coordinating with IT engineers and data analysts.</li>
-          <li>Managed CRM automation campaigns using Insider, targeting dozens of user segments via push notifications, WA blast, and in-app pop-ups.</li>
-          <li>Managed WordPress website updates and maintained campaign landing pages for active acquisition campaigns.</li>
-          <li>Reduced CPA (signup) by 42.55% and CPI by up to 35% through data-driven budget reallocation.</li>
-        </ul>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- WORK / PORTFOLIO -->
-<section id="work">
-  <div class="section-label">Selected Work</div>
-  <div class="section-title">Campaigns that moved the needle.</div>
-  <div class="portfolio-grid reveal">
-
-    <div class="portfolio-card">
-      <h3>E-commerce Scale-Up</h3>
-      <div class="sub">Porto X · Shopee CPAS + Meta · Oct 2025 – Mar 2026</div>
-      <p>Hypothesised that retargeting pool was underutilised. Tested segmented audience structure across Shopee and Meta, then scaled aggressively. Managed full funnel from audience strategy to creative briefing and daily budget reallocation.</p>
-      <div class="metrics-row">
-        <div class="metric-item">
-          <div class="val">3.1x</div>
-          <div class="key">Revenue Growth</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">5.3x</div>
-          <div class="key">ROAS</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">+215%</div>
-          <div class="key">Purchase Volume</div>
-        </div>
-      </div>
+<section class="section trust-section" id="trust">
+  <div class="container trust-inner">
+    <div class="trust-head">
+      <span class="trust-badge">Why Work With Me</span>
+      <h2>Your business stays in your control.</h2>
+      <p class="desc" style="margin-left:auto;margin-right:auto">Clear access, transparent reporting and realistic expectations reduce the biggest risks businesses usually worry about when outsourcing paid media.</p>
     </div>
 
-    <div class="portfolio-card">
-      <h3>CPA Reduction Campaign</h3>
-      <div class="sub">Porto X · Meta Ads · Oct 2025 – Present</div>
-      <p>Identified inefficient audience targeting and bloated CPM costs. Rebuilt campaign structure with tighter segmentation, tested new creative angles weekly, and reallocated budget based on daily CPAS data — not platform attribution.</p>
-      <div class="metrics-row">
-        <div class="metric-item">
-          <div class="val">75%+</div>
-          <div class="key">CPA Reduction</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">16x</div>
-          <div class="key">Purchase Volume</div>
-        </div>
-      </div>
+    <div class="trust-grid">
+      <div class="trust-item"><div class="ticon">🔐</div><div><h3>Your Accounts Stay Yours</h3><p>Your ad and marketplace accounts remain under your ownership. I work through user or partner access where possible.</p></div></div>
+      <div class="trust-item"><div class="ticon">💳</div><div><h3>Direct Ad Spend</h3><p>Your advertising budget is paid directly to Meta, Google, TikTok, Shopee or the relevant platform.</p></div></div>
+      <div class="trust-item"><div class="ticon">📊</div><div><h3>Transparent Reporting</h3><p>Updates explain what was spent, what happened, what changed and what the next action should be.</p></div></div>
+      <div class="trust-item"><div class="ticon">🧭</div><div><h3>No Unrealistic Promises</h3><p>No guaranteed ROAS or overnight-growth claims. Performance depends on product, offer, creative, market and funnel quality.</p></div></div>
+      <div class="trust-item"><div class="ticon">📋</div><div><h3>Clear Scope</h3><p>Channels, deliverables, timelines and responsibilities are agreed before work begins.</p></div></div>
+      <div class="trust-item"><div class="ticon">🤝</div><div><h3>Confidential by Default</h3><p>Business, advertising and performance data are treated as confidential and are not shared publicly without permission.</p></div></div>
     </div>
 
-    <div class="portfolio-card">
-      <h3>Multi-Platform Acquisition</h3>
-      <div class="sub">MAPAN · Meta, TikTok, Google, SHAREit · 2023–2024</div>
-      <p>Managed cross-platform acquisition campaigns for a fintech app. Built creative briefs, coordinated assets, monitored daily tracking via AppsFlyer and GA4, and prepared weekly performance decks for stakeholders.</p>
-      <div class="metrics-row">
-        <div class="metric-item">
-          <div class="val">42.55%</div>
-          <div class="key">CPA Reduction</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">68%</div>
-          <div class="key">Signup Rate</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">6.09%</div>
-          <div class="key">Purchase Rate</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="portfolio-card">
-      <h3>CRM Automation System</h3>
-      <div class="sub">MAPAN · Insider CRM · 2023–2024</div>
-      <p>Built and managed CRM automation campaigns targeting dozens of audience segments within the Mapan app. Coordinated with IT engineers and data analysts. Platforms included in-app pop-ups, WA blasts, and push notifications.</p>
-      <div class="metrics-row">
-        <div class="metric-item">
-          <div class="val">2,221</div>
-          <div class="key">Total Clicks</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">987</div>
-          <div class="key">Conversions</div>
-        </div>
-        <div class="metric-item">
-          <div class="val">0.86%</div>
-          <div class="key">CTR</div>
-        </div>
-      </div>
-    </div>
-
+    <div class="trust-callout"><strong>I optimise against business outcomes, not just Ads Manager.</strong> Platform ROAS is a signal, not the whole story. Where possible, paid-media performance is evaluated alongside actual marketplace, website, app or CRM outcomes.</div>
   </div>
 </section>
 
+<section class="section" id="services">
+  <div class="container">
+    <div class="kicker">Services</div>
+    <h2 class="title">Choose the problem you need solved.</h2>
+    <p class="desc">Management fees are separate from advertising spend. Ad budget is paid directly by the client to the platform.</p>
 
-<!-- SERVICES / WORK WITH ME -->
-<section class="services" id="services">
-  <div class="section-label">Work With Me</div>
-  <div class="section-title">Performance marketing<br>built around your numbers.</div>
-
-  <div class="skills-grid reveal">
-
-    <div class="skill-card">
-      <div class="skill-icon">📈</div>
-      <h3>Paid Ads Management</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">
-        End-to-end campaign management focused on profitable acquisition,
-        including campaign structure, budget allocation, testing, and ongoing optimisation.
-      </p>
-
-      <div class="skill-tags">
-        <span class="skill-tag">Meta Ads</span>
-        <span class="skill-tag">TikTok Ads</span>
-        <span class="skill-tag">Google Ads</span>
+    <div class="services-shell">
+      <div class="services-head">
+        <span class="mini">Performance Services</span>
+        <h2>Built around your numbers.</h2>
+        <p>Pricing can change with channel count, campaign volume and business complexity, but scope stays clear from the start.</p>
       </div>
 
-      <p style="margin-top:20px;font-size:13px;color:var(--text-muted);">
-        Starting from <strong style="color:var(--text)">Rp1.5M / month</strong>
-      </p>
-    </div>
+      <div class="services-grid">
+        <div class="service">
+          <span class="service-tag">Marketplace Growth</span>
+          <h3>E-commerce & Marketplace Growth</h3>
+          <div class="for">Best for marketplace-led brands looking to improve sales and ROAS.</div>
+          <div class="price">From Rp2.5M / month</div>
+          <ul>
+            <li>Shopee Ads / Meta CPAS management</li>
+            <li>Campaign setup & optimisation</li>
+            <li>Budget allocation</li>
+            <li>ROAS & CPA monitoring</li>
+            <li>Product / campaign prioritisation</li>
+            <li>Promo performance planning</li>
+            <li>Weekly performance update</li>
+            <li>Monthly commerce report</li>
+            <li>Monthly strategy review</li>
+          </ul>
+          <a class="service-link" href="#work">View Porto X Results →</a>
+          <div class="scope">Ad spend and creative production are not included.</div>
+        </div>
 
-    <div class="skill-card">
-      <div class="skill-icon">🛒</div>
-      <h3>E-commerce Performance</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">
-        Performance optimisation for e-commerce brands across paid media
-        and marketplace channels with a focus on ROAS, CPA, and revenue growth.
-      </p>
+        <div class="service">
+          <span class="service-tag">Paid Acquisition</span>
+          <h3>Paid Acquisition Management</h3>
+          <div class="for">Best for businesses that need one primary paid channel managed consistently.</div>
+          <div class="price">From Rp2M / month</div>
+          <ul>
+            <li>1 advertising platform</li>
+            <li>Campaign setup / restructure</li>
+            <li>Audience & retargeting strategy</li>
+            <li>Budget optimisation</li>
+            <li>A/B testing</li>
+            <li>Creative performance direction</li>
+            <li>Weekly monitoring</li>
+            <li>Monthly performance report</li>
+            <li>1 monthly strategy call</li>
+          </ul>
+          <a class="service-link" href="#contact">Discuss Your Channel →</a>
+          <div class="scope">Creative direction is included; production, editing and influencer fees are not.</div>
+        </div>
 
-      <div class="skill-tags">
-        <span class="skill-tag">Meta Ads</span>
-        <span class="skill-tag">Shopee Ads</span>
-        <span class="skill-tag">TikTok Shop</span>
+        <div class="service">
+          <span class="service-tag">Low-Risk Entry</span>
+          <h3>Ads Audit & Growth Plan</h3>
+          <div class="for">Best for businesses already running ads but unsure what needs fixing.</div>
+          <div class="price">Rp750K one-off</div>
+          <ul>
+            <li>Ads account audit</li>
+            <li>Campaign structure review</li>
+            <li>Tracking check</li>
+            <li>Funnel review</li>
+            <li>Budget efficiency analysis</li>
+            <li>Prioritised action plan</li>
+            <li>45-minute strategy consultation</li>
+          </ul>
+          <a class="service-link" href="#contact">Start With an Audit →</a>
+          <div class="scope">No monthly management commitment required.</div>
+        </div>
       </div>
-
-      <p style="margin-top:20px;font-size:13px;color:var(--text-muted);">
-        Scope-based pricing
-      </p>
     </div>
-
-    <div class="skill-card">
-      <div class="skill-icon">🔎</div>
-      <h3>Ads Audit & Tracking</h3>
-      <p style="font-size:14px;color:var(--text-muted);line-height:1.6;">
-        Review campaign structure, conversion tracking, and performance data
-        to identify wasted spend and opportunities for improvement.
-      </p>
-
-      <div class="skill-tags">
-        <span class="skill-tag">GTM</span>
-        <span class="skill-tag">GA4</span>
-        <span class="skill-tag">Pixel</span>
-      </div>
-
-      <p style="margin-top:20px;font-size:13px;color:var(--text-muted);">
-        Project-based
-      </p>
-    </div>
-
   </div>
 </section>
 
-<!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="contact-inner reveal">
-    <div class="section-label" style="text-align:center">Contact</div>
-    <h2>Let's work together.</h2>
-    <p>Whether you're looking to scale paid acquisition, improve campaign efficiency, or need experienced performance marketing support, let's talk. I'm available for selected freelance projects and full-time opportunities.</p>
-    <div class="contact-links">
-      <a href="https://wa.me/6282334605569?text=Hi%20Fikry%2C%20I%27m%20interested%20in%20working%20with%20you%20on%20paid%20ads." target="_blank" class="contact-link primary">WhatsApp Me</a>
-      <a href="mailto:adityafikry@gmail.com" class="contact-link secondary">✉ Email</a>
-      <a href="https://linkedin.com/in/fikry-aditya/" target="_blank" class="contact-link secondary">LinkedIn</a>
+<section class="section" id="work">
+  <div class="container">
+    <div class="case-head">
+      <div class="kicker">Case Studies</div>
+      <h2 class="title">Proof after the promise.</h2>
+      <p class="desc">Real projects across e-commerce, app growth, CRM, website conversion and tracking.</p>
+    </div>
+
+    <article class="featured" id="porto-x-detail">
+      <div class="featured-top">
+        <div class="case-intro">
+          <div class="kicker">Featured · Porto X</div>
+          <h3>E-commerce Growth & Paid Acquisition</h3>
+          <p>Managed marketplace and paid acquisition performance across Shopee Ads and Meta CPAS, with business reporting used alongside platform attribution.</p>
+          <div class="tags"><span class="tag">E-commerce & Marketplace</span><span class="tag">Paid Acquisition</span><span class="tag">Tracking</span></div>
+
+          <div class="metric-stack">
+            <div class="metric-line"><div class="metric-icon">↗</div><div><strong>Rp609M → Rp1.9B</strong><small>Monthly Gross Revenue</small></div><div class="delta">3.1x</div></div>
+            <div class="metric-line"><div class="metric-icon">▣</div><div><strong>2,507 → 7,898</strong><small>Monthly Purchases</small></div><div class="delta">3.15x</div></div>
+            <div class="metric-line"><div class="metric-icon">⌁</div><div><strong>4.77x → 5.33x</strong><small>Shopee ROAS while scaling</small></div><div class="delta">↑</div></div>
+          </div>
+        </div>
+
+        <div class="case-grid">
+          <div class="data-card">
+            <h4>Shopee Performance</h4><div class="data-sub">Business outcomes</div>
+            <div class="kpis">
+              <div class="kpi"><strong>Rp1.91B</strong><span>Gross Revenue · Mar</span></div>
+              <div class="kpi"><strong>7,898</strong><span>Purchases · Mar</span></div>
+              <div class="kpi"><strong>2.93%</strong><span>CTR · Mar</span></div>
+              <div class="kpi"><strong>5.33x</strong><span>ROAS · Mar</span></div>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 600 180" preserveAspectRatio="none">
+                <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1659e8" stop-opacity=".22"/><stop offset="100%" stop-color="#1659e8" stop-opacity=".01"/></linearGradient></defs>
+                <polygon points="0,145 120,130 240,95 360,80 480,60 600,10 600,180 0,180" fill="url(#area)"/>
+                <polyline points="0,145 120,130 240,95 360,80 480,60 600,10" fill="none" stroke="#1659e8" stroke-width="4"/>
+                <g fill="#1659e8"><circle cx="0" cy="145" r="5"/><circle cx="120" cy="130" r="5"/><circle cx="240" cy="95" r="5"/><circle cx="360" cy="80" r="5"/><circle cx="480" cy="60" r="5"/><circle cx="600" cy="10" r="5"/></g>
+              </svg>
+            </div>
+            <div class="months"><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span></div>
+            <div class="table-wrap">
+              <table class="case-table">
+                <thead><tr><th>Month</th><th>Spend</th><th>Purchases</th><th>Gross Revenue</th><th>ROAS</th></tr></thead>
+                <tbody>
+                  <tr><td>Oct</td><td>Rp127.8M</td><td>2,507</td><td>Rp609.7M</td><td>4.77x</td></tr>
+                  <tr><td>Nov</td><td>Rp140.8M</td><td>2,941</td><td>Rp734.3M</td><td>5.21x</td></tr>
+                  <tr><td>Dec</td><td>Rp203.8M</td><td>4,268</td><td>Rp1.047B</td><td>5.14x</td></tr>
+                  <tr><td>Jan</td><td>Rp212.8M</td><td>4,785</td><td>Rp1.167B</td><td>5.48x</td></tr>
+                  <tr><td>Feb</td><td>Rp245.7M</td><td>5,529</td><td>Rp1.326B</td><td>5.40x</td></tr>
+                  <tr><td>Mar</td><td>Rp357.2M</td><td>7,898</td><td>Rp1.906B</td><td>5.33x</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="data-card">
+            <h4>Meta CPAS Performance</h4><div class="data-sub">Platform-attributed evidence</div>
+            <div class="meta-frame"><img src="assets/meta-results.png" alt="Meta CPAS results"><div class="meta-caption">Results, cost per result and spend view</div></div>
+            <div class="meta-frame"><img src="assets/meta-roas.png" alt="Meta CPAS ROAS"><div class="meta-caption">Attributed purchase value and ROAS view</div></div>
+            <div class="meta-stats">
+              <div class="meta-stat"><strong>10,477</strong><span>Attributed Purchases</span></div>
+              <div class="meta-stat"><strong>Rp9,012</strong><span>Cost / Purchase</span></div>
+              <div class="meta-stat"><strong>Rp2.75B</strong><span>Attributed Value</span></div>
+              <div class="meta-stat"><strong>29.09x</strong><span>Meta ROAS</span></div>
+            </div>
+          </div>
+
+          <div class="note"><strong>Measurement note.</strong> Meta Ads Manager and Shopee use different attribution methodologies. Shopee reporting is used for primary commerce outcomes, while Meta figures are shown as platform-attributed campaign signals.</div>
+        </div>
+      </div>
+    </article>
+
+    <div class="library-head">
+      <div class="kicker">Explore More Projects</div>
+      <h2 class="title">Browse by business problem.</h2>
+      <p class="desc">One brand can appear across multiple projects and capabilities.</p>
+
+      <div class="filterbar">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="ecommerce">E-commerce & Marketplace</button>
+        <button class="filter-btn" data-filter="paid">Paid Acquisition</button>
+        <button class="filter-btn" data-filter="website">Website Growth & Conversion</button>
+        <button class="filter-btn" data-filter="app">App Growth</button>
+        <button class="filter-btn" data-filter="crm">CRM & Retention</button>
+        <button class="filter-btn" data-filter="tracking">Tracking & Analytics</button>
+      </div>
+
+      <div class="project-grid">
+
+        <article class="project-card" data-cat="ecommerce paid">
+          <div class="project-visual brand">PORTO X</div>
+          <div class="project-body">
+            <div class="project-brand">Porto X · E-commerce</div>
+            <h3>E-commerce Revenue Scale-Up</h3>
+            <p>Marketplace growth supported by Shopee Ads, product prioritisation and budget optimisation.</p>
+            <div class="project-tags"><span>E-commerce</span><span>Paid Acquisition</span></div>
+            <div class="project-metrics"><div class="pm"><strong>3.1x</strong><span>Revenue Growth</span></div><div class="pm"><strong>7,898</strong><span>Monthly Purchases</span></div><div class="pm"><strong>5.33x</strong><span>ROAS at Scale</span></div></div>
+            <a class="view" href="#porto-x-detail">View Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="ecommerce paid tracking">
+          <div class="project-visual"><img src="assets/meta-results.png" alt="Porto X Meta CPAS"></div>
+          <div class="project-body">
+            <div class="project-brand">Porto X · Paid Acquisition</div>
+            <h3>Meta CPAS Performance</h3>
+            <p>Always-on Meta CPAS campaign supporting Shopee acquisition with platform-attributed measurement.</p>
+            <div class="project-tags"><span>Meta CPAS</span><span>Tracking</span></div>
+            <div class="project-metrics"><div class="pm"><strong>10,477</strong><span>Attributed Purchases</span></div><div class="pm"><strong>Rp9,012</strong><span>CPA</span></div><div class="pm"><strong>29.09x*</strong><span>Meta ROAS</span></div></div>
+            <a class="view" href="#porto-x-detail">View Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="tracking website">
+          <div class="project-visual brand">PORTO X</div>
+          <div class="project-body">
+            <div class="project-brand">Porto X · Measurement</div>
+            <h3>Conversion Tracking & Attribution</h3>
+            <p>Conversion measurement across GA4, GTM and advertising platforms to improve campaign decision-making.</p>
+            <div class="project-tags"><span>Tracking</span><span>Analytics</span></div>
+            <a class="view" href="#contact">Discuss Similar Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="app paid">
+          <div class="project-visual"><img src="assets/mapan-acq-1.png" alt="MAPAN app acquisition performance"></div>
+          <div class="project-body">
+            <div class="project-brand">MAPAN · Consumer App</div>
+            <h3>App User Acquisition</h3>
+            <p>Managed acquisition and app funnel performance across Google UAC, Meta and TikTok, from media planning to conversion monitoring.</p>
+            <div class="project-tags"><span>App Growth</span><span>Paid Acquisition</span></div>
+            <div class="project-metrics"><div class="pm"><strong>82.3%</strong><span>Install → Signup</span></div><div class="pm"><strong>Rp9.3K</strong><span>Cost per Install</span></div><div class="pm"><strong>Rp11.3K</strong><span>Cost per Signup</span></div></div>
+            <a class="view" href="#contact">View Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="crm app">
+          <div class="project-visual"><img src="assets/mapan-crm.png" alt="MAPAN push notification automation performance"></div>
+          <div class="project-body">
+            <div class="project-brand">MAPAN · CRM & Retention</div>
+            <h3>Push Notification Automation</h3>
+            <p>Built and monitored segmented push notification campaigns designed to drive users toward key in-app actions.</p>
+            <div class="project-tags"><span>CRM & Retention</span><span>Marketing Automation</span></div>
+            <div class="project-metrics"><div class="pm"><strong>741K+</strong><span>Delivered</span></div><div class="pm"><strong>3.24%</strong><span>Automation CTR</span></div><div class="pm"><strong>100K+</strong><span>Automated Pushes</span></div></div>
+            <a class="view" href="#contact">View Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="website paid">
+          <div class="project-visual brand">MEGANE</div>
+          <div class="project-body">
+            <div class="project-brand">Megane · Website Growth</div>
+            <h3>Website Acquisition & Conversion</h3>
+            <p>Paid traffic acquisition designed to move qualified visitors toward conversion and sales, not traffic alone.</p>
+            <div class="project-tags"><span>Website Growth</span><span>Paid Acquisition</span></div>
+            <a class="view" href="#contact">View Project →</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-cat="crm">
+          <div class="project-visual brand">YOUR COMMS</div>
+          <div class="project-body">
+            <div class="project-brand">Your Comms Group · CRM Operations</div>
+            <h3>CRM Data & Retention Operations</h3>
+            <p>CRM hygiene, customer-journey support, lead operations and structured data processes across HubSpot and Freshworks.</p>
+            <div class="project-tags"><span>CRM & Retention</span></div>
+            <a class="view" href="#contact">View Project →</a>
+          </div>
+        </article>
+
+      </div>
     </div>
   </div>
 </section>
+
+<section class="section" id="experience">
+  <div class="container">
+    <div class="kicker">Experience</div>
+    <h2 class="title">Hands-on ownership across growth, CRM and performance.</h2>
+
+    <div class="exp-grid">
+      <div class="exp"><h3>Porto X</h3><div class="role">Performance Marketing Specialist</div><p>Paid media, e-commerce performance, campaign operations, tracking and business reporting across multiple acquisition channels.</p></div>
+      <div class="exp"><h3>Your Comms Group</h3><div class="role">CRM Coordinator</div><p>CRM data operations, customer journeys, lead workflows and structured database management across HubSpot and Freshworks.</p></div>
+      <div class="exp"><h3>MAPAN</h3><div class="role">Digital Marketing</div><p>App user acquisition, Google UAC, Meta/TikTok campaign support, conversion monitoring and CRM automation.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2>Have numbers already? Let’s find the bottleneck.</h2>
+        <p>Share your current revenue, ad spend, primary channel and biggest challenge. I’ll help identify where the strongest optimisation opportunity may be.</p>
+      </div>
+      <a class="cta-btn" target="_blank" href="https://wa.me/6282334605569?text=Hi%20Fikry%2C%20I%27m%20interested%20in%20working%20with%20you%20on%20paid%20ads.%20My%20current%20monthly%20revenue%20is%20___%2C%20ad%20spend%20is%20___%2C%20and%20my%20main%20challenge%20is%20___.">Discuss Your Project →</a>
+    </div>
+  </div>
+</section>
+
+</main>
 
 <footer>
-  <p>© 2026 Fikry Aditya Ardiansyah. Jakarta, Indonesia.</p>
-  <p style="color:var(--text-muted);font-size:12px">Performance Marketing · CRM · E-commerce</p>
+  <div class="container foot">
+    <span>© 2026 Fikry Aditya Ardiansyah · Jakarta, Indonesia</span>
+    <span>Performance Marketing · E-commerce · CRM</span>
+  </div>
 </footer>
 
 <script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
+const filterButtons = document.querySelectorAll('.filter-btn');
+const projectCards = document.querySelectorAll('.project-card');
+
+filterButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+
+    projectCards.forEach(card => {
+      const cats = card.dataset.cat.split(' ');
+      card.classList.toggle('hidden', !(filter === 'all' || cats.includes(filter)));
     });
-  }, { threshold: 0.1 });
-  reveals.forEach(r => observer.observe(r));
-
-  // Experience toggle
-  function toggleExp(header) {
-    const card = header.parentElement;
-    const body = card.querySelector('.exp-body');
-    const toggle = card.querySelector('.exp-toggle');
-    const isOpen = body.classList.contains('open');
-    body.classList.toggle('open');
-    card.classList.toggle('open');
-    toggle.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(45deg)';
-  }
-
-  // Animated number counter
-  function animateCounter(el, target, suffix='') {
-    let start = 0;
-    const duration = 1500;
-    const step = timestamp => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target) + suffix;
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
+  });
+});
 </script>
+
 </body>
 </html>
+"""
+
+(site / "index.html").write_text(html, encoding="utf-8")
+
+zip_path = base / "fikry_landing_page_restructured.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for p in site.rglob("*"):
+        if p.is_file():
+            z.write(p, p.relative_to(site))
+
+print("Created:", site / "index.html")
+print("Created:", zip_path)
+print("Assets:", sorted(p.name for p in assets.iterdir()))
