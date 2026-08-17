@@ -1,37 +1,4 @@
-from pathlib import Path
-from PIL import Image
-import zipfile, shutil, os
-
-base = Path("/mnt/data")
-site = base / "fikry_landing_page_restructured"
-assets = site / "assets"
-assets.mkdir(parents=True, exist_ok=True)
-
-# Reuse/copy existing assets when available
-possible_assets = {
-    "meta-results.png": base / "fikry_landing_page_final/assets/meta-results.png",
-    "meta-roas.png": base / "fikry_landing_page_final/assets/meta-roas.png",
-    "mapan-crm.png": base / "fikry_landing_page_final/assets/mapan-crm.png",
-    "mapan-acq-1.png": base / "fikry_landing_page_final/assets/mapan-acq-1.png",
-    "mapan-acq-2.png": base / "fikry_landing_page_final/assets/mapan-acq-2.png",
-    "mapan-plan.png": base / "fikry_landing_page_final/assets/mapan-plan.png",
-}
-
-fallbacks = {
-    "meta-results.png": base / "2626c774-73b7-48f6-ba3d-36acfe6b33f2.png",
-    "meta-roas.png": base / "a97ef07f-5380-4005-95a3-94a64360ad95.png",
-    "mapan-crm.png": base / "69265d5d-9b5e-44ad-ab65-cebccd274736.png",
-    "mapan-acq-1.png": base / "5b04c055-387e-4b7c-a9e8-b50d9586678d.png",
-    "mapan-acq-2.png": base / "0b58d8a6-84bc-4f52-8696-f28ae554fb57.png",
-    "mapan-plan.png": base / "6cb23834-61dc-447b-9e2a-91b5dca17696.png",
-}
-
-for name, src in possible_assets.items():
-    src_to_use = src if src.exists() else fallbacks[name]
-    if src_to_use.exists():
-        shutil.copy2(src_to_use, assets / name)
-
-html = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -755,16 +722,3 @@ filterButtons.forEach(btn => {
 
 </body>
 </html>
-"""
-
-(site / "index.html").write_text(html, encoding="utf-8")
-
-zip_path = base / "fikry_landing_page_restructured.zip"
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for p in site.rglob("*"):
-        if p.is_file():
-            z.write(p, p.relative_to(site))
-
-print("Created:", site / "index.html")
-print("Created:", zip_path)
-print("Assets:", sorted(p.name for p in assets.iterdir()))
