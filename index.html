@@ -937,8 +937,44 @@
         padding-bottom:20px;
       }
       .work-head{flex-direction:column;align-items:flex-start}
-      .automation{grid-template-columns:1fr}
-      .arrow{transform:rotate(90deg)}
+.visual-box{
+  height:auto;
+  min-height:180px;
+  padding:20px 14px;
+}
+
+.automation{
+  grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);
+  gap:5px;
+  width:100%;
+  align-items:center;
+}
+
+.automation .node{
+  min-width:0;
+  padding:12px 6px;
+}
+
+.automation .node-icon{
+  width:28px;
+  height:28px;
+  font-size:11px;
+}
+
+.automation .node strong{
+  font-size:7.5px;
+  line-height:1.2;
+}
+
+.automation .node span{
+  font-size:5.5px;
+  line-height:1.3;
+}
+
+.automation .arrow{
+  transform:none;
+  font-size:12px;
+}
       .crm-flow{grid-template-columns:repeat(3,1fr)}
   .creative-showcase{
     padding:24px;
