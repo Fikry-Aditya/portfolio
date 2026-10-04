@@ -9,7 +9,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
     :root{
@@ -25,6 +28,10 @@
       box-sizing:border-box;
       margin:0;
       padding:0;
+    }
+
+    html{
+      scroll-behavior:smooth;
     }
 
     body{
@@ -44,15 +51,26 @@
       margin:auto;
     }
 
+    /* =========================
+       HERO
+    ========================= */
+
     .case-hero{
       padding:46px 0 72px;
     }
 
     .back-link{
       display:inline-flex;
+      align-items:center;
+      gap:6px;
       font-size:12px;
       color:var(--muted);
       margin-bottom:54px;
+      transition:.2s ease;
+    }
+
+    .back-link:hover{
+      color:var(--blue);
     }
 
     .eyebrow{
@@ -118,6 +136,74 @@
       color:var(--muted);
     }
 
+    /* =========================
+       BUSINESS CONTEXT
+    ========================= */
+
+    .context-section{
+      padding:88px 0;
+      background:var(--soft);
+    }
+
+    .context-grid{
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      gap:80px;
+      align-items:start;
+    }
+
+    .context-title{
+      font-family:"Manrope",sans-serif;
+      font-size:clamp(36px,4.5vw,58px);
+      line-height:1.05;
+      letter-spacing:-2px;
+      max-width:520px;
+    }
+
+    .context-copy{
+      max-width:640px;
+    }
+
+    .context-copy p{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.8;
+      margin-bottom:18px;
+    }
+
+    .context-meta{
+      margin-top:34px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+      padding-top:26px;
+      border-top:1px solid var(--line);
+    }
+
+    .context-meta div{
+      min-width:0;
+    }
+
+    .context-meta span{
+      display:block;
+      font-size:8px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#98a2b3;
+      margin-bottom:5px;
+    }
+
+    .context-meta strong{
+      display:block;
+      font-family:"Manrope",sans-serif;
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media(max-width:720px){
 
       .container{
@@ -141,19 +227,54 @@
         font-size:15px;
       }
 
+      .case-role{
+        font-size:10px;
+        line-height:1.6;
+      }
+
       .metrics{
         grid-template-columns:1fr;
+        margin-top:38px;
       }
 
       .metric{
         border-right:0;
         border-bottom:1px solid var(--line);
+        padding:20px;
       }
 
       .metric:last-child{
         border-bottom:0;
       }
+
+      .metric strong{
+        font-size:30px;
+      }
+
+      .context-section{
+        padding:56px 0;
+      }
+
+      .context-grid{
+        grid-template-columns:1fr;
+        gap:32px;
+      }
+
+      .context-title{
+        font-size:38px;
+        letter-spacing:-1.5px;
+      }
+
+      .context-copy p{
+        font-size:13px;
+      }
+
+      .context-meta{
+        grid-template-columns:1fr;
+        gap:18px;
+      }
     }
+
   </style>
 </head>
 
@@ -161,8 +282,8 @@
 
   <main>
 
+    <!-- HERO -->
     <section class="case-hero">
-
       <div class="container">
 
         <a class="back-link" href="../../index.html#work">
@@ -191,7 +312,7 @@
 
           <div class="metric">
             <strong>3.1x</strong>
-            <span>Revenue Growth</span>
+            <span>Shopee Ad Revenue Growth</span>
           </div>
 
           <div class="metric">
@@ -207,7 +328,71 @@
         </div>
 
       </div>
+    </section>
 
+
+    <!-- BUSINESS CONTEXT -->
+    <section class="context-section">
+      <div class="container context-grid">
+
+        <div>
+          <div class="eyebrow">
+            Business Context
+          </div>
+
+          <h2 class="context-title">
+            Building a clearer performance system for a growing e-commerce brand.
+          </h2>
+        </div>
+
+        <div class="context-copy">
+
+          <p>
+            Porto X is a recovery footwear brand selling across its own website
+            and marketplace channels, with paid acquisition supporting both
+            direct-response and e-commerce growth.
+          </p>
+
+          <p>
+            When I joined in October 2025, Shopee performance was already
+            relatively stable, but the broader paid media setup still lacked
+            clear audience direction, consistent creative logic, and enough
+            structured data to confidently decide what should be scaled.
+          </p>
+
+          <p>
+            My role was to build a more structured performance approach across
+            audience testing, creative direction, budget allocation, measurement,
+            and conversion.
+          </p>
+
+          <div class="context-meta">
+
+            <div>
+              <span>Primary Channels</span>
+              <strong>Meta · Shopee · TikTok · Google</strong>
+            </div>
+
+            <div>
+              <span>Core Objective</span>
+              <strong>Purchase & Revenue Growth</strong>
+            </div>
+
+            <div>
+              <span>Case Study Period</span>
+              <strong>Oct 2025 — Mar 2026</strong>
+            </div>
+
+            <div>
+              <span>Role</span>
+              <strong>Performance Marketing</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
     </section>
 
   </main>
